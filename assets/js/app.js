@@ -1,21 +1,21 @@
-// assets/js/app.js
 (() => {
+  const BASE_PATH = "/grimshire-moddev/";
+
   const pages = [
-    { href: "index.html", label: "Overview", key: "index" },
-    { href: "1-software-and-tools.html", label: "1. Software and tools", key: "software-and-tools" },
-    { href: "2-install-and-setup.html", label: "2. Installation and set-up", key: "software-and-tools" },
-    { href: "3-creating-a-project.html", label: "3. Creating a project", key: "creating-a-project" },
-    { href: "4-configuring-assembly.html", label: "4. Configuring the assembly", key: "configuring-assembly" },
-    { href: "5-adding-references.html", label: "5. Adding references", key: "adding-references" },
+    { href: `${BASE_PATH}`, label: "Overview", key: "index" },
+    { href: `${BASE_PATH}software-and-tools/`, label: "1. Software and tools", key: "software-and-tools" },
+    { href: `${BASE_PATH}install-and-setup/`, label: "2. Installation and set-up", key: "install-and-setup" },
+    { href: `${BASE_PATH}creating-a-project/`, label: "3. Creating a project", key: "creating-a-project" },
+    { href: `${BASE_PATH}configuring-assembly/`, label: "4. Configuring the assembly", key: "configuring-assembly" },
+    { href: `${BASE_PATH}adding-references/`, label: "5. Adding references", key: "adding-references" },
   ];
 
-  const getCurrentFile = () => {
-    const path = window.location.pathname;
-    const file = path.split("/").pop();
-    return file && file.length > 0 ? file : "index.html";
+  const normalizePath = (p) => {
+    if (!p) return BASE_PATH;
+    return p.endsWith("/") ? p : `${p}/`;
   };
 
-  const currentFile = getCurrentFile();
+  const currentPath = normalizePath(window.location.pathname);
 
   const escapeHtml = (str) =>
     str
@@ -28,7 +28,7 @@
   const renderSidebar = () => {
     const navItems = pages
       .map((page) => {
-        const active = page.href === currentFile;
+        const active = normalizePath(page.href) === currentPath;
         return `
           <a class="nav-link ${active ? "active" : ""}" href="${escapeHtml(page.href)}">
             ${escapeHtml(page.label)}
@@ -55,7 +55,7 @@
   };
 
   const renderTopbar = () => {
-    const pageMeta = pages.find((p) => p.href === currentFile);
+    const pageMeta = pages.find((p) => normalizePath(p.href) === currentPath);
     const pageLabel = pageMeta ? pageMeta.label : "Guide";
 
     return `
@@ -64,7 +64,7 @@
           <span class="topbar-kicker">Documentation</span>
           <h2 class="topbar-title">${escapeHtml(pageLabel)}</h2>
         </div>
-        <a class="topbar-link" href="index.html">Home</a>
+        <a class="topbar-link" href="${BASE_PATH}">Home</a>
       </header>
     `;
   };
